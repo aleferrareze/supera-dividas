@@ -105,7 +105,8 @@ export default function App() {
   // Check admin route BEFORE hooks to allow early return pattern via state
   const [isAdmin] = useState(() => {
     const params = new URLSearchParams(window.location.search);
-    return params.has('admin') || window.location.hash === '#admin';
+    const path = window.location.pathname;
+    return params.has('admin') || window.location.hash === '#admin' || path === '/admin' || path.startsWith('/admin/');
   });
 
   const [appState, setAppState] = useState<AppState>('landing');
