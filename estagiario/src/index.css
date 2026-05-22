@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-af-dark text-white font-sans antialiased;
+    min-height: 100vh;
+  }
+
+  /* Prevent text selection during exam — toggled via JS class on body */
+  body.exam-active {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+
+  /* Allow selection for form inputs even in exam mode */
+  body.exam-active input,
+  body.exam-active textarea {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-af-coral hover:bg-af-coral-dark text-white font-semibold py-3 px-6 rounded-xl
+           transition-all duration-200 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed
+           disabled:active:scale-100 focus:outline-none focus:ring-2 focus:ring-af-coral/50;
+  }
+
+  .btn-secondary {
+    @apply bg-af-muted hover:bg-af-border text-white font-semibold py-3 px-6 rounded-xl
+           border border-af-border transition-all duration-200 active:scale-95
+           focus:outline-none focus:ring-2 focus:ring-white/20;
+  }
+
+  .card {
+    @apply bg-af-card border border-af-border rounded-2xl;
+  }
+
+  .input-field {
+    @apply w-full bg-af-muted border border-af-border text-white placeholder-gray-500
+           rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-af-coral/50
+           focus:border-af-coral transition-all duration-200;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-gray-300 mb-1.5;
+  }
+
+  .option-radio {
+    @apply w-full flex items-start gap-4 p-4 rounded-xl border border-af-border
+           cursor-pointer transition-all duration-200 hover:border-af-coral/50
+           hover:bg-af-muted/60 active:scale-[0.99];
+  }
+
+  .option-radio.selected {
+    @apply border-af-coral bg-af-coral/10;
+  }
+}
+
+@layer utilities {
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #252525 transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #252525;
+    border-radius: 2px;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .card {
+    border: 1px solid #ccc !important;
+    background: white !important;
+  }
+}
