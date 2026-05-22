@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { ExamResult } from '../types/exam';
 import { questions } from '../data/questions';
+import { getAllExamResults, deleteExamResult } from '../lib/supabase';
 
 const ADMIN_PASSWORD = 'AFadvogados@2025';
 const ADMIN_SESSION_KEY = 'af_admin_auth';
-const RESULT_PREFIX = 'af_result_';
 
 type FilterType = 'all' | 'approved' | 'rejected';
 
@@ -22,22 +22,6 @@ function formatDuration(s: number): string {
   const m = Math.floor(s / 60);
   const sec = s % 60;
   return `${m}min ${sec}s`;
-}
-
-function getAllResults(): ExamResult[] {
-  const results: ExamResult[] = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key?.startsWith(RESULT_PREFIX)) {
-      try {
-        const parsed: ExamResult = JSON.parse(localStorage.getItem(key) || '');
-        results.push(parsed);
-      } catch { /* skip corrupted entry */ }
-    }
-  }
-  return results.sort(
-    (a, b) => new Date(b.finishedAt).getTime() - new Date(a.finishedAt).getTime()
-  );
 }
 
 function exportCSV(results: ExamResult[]) {
@@ -75,14 +59,29 @@ export default function AdminPanel() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [results, setResults] = useState<ExamResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
   const [search, setSearch] = useState('');
   const [expanded, setExpanded] = useState<string | null>(null);
 
+  const loadResults = async () => {
+    setLoading(true);
+    setFetchError('');
+    try {
+      const data = await getAllExamResults();
+      setResults(data);
+    } catch {
+      setFetchError('Não foi possível carregar os resultados. Verifique a conexão.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (sessionStorage.getItem(ADMIN_SESSION_KEY) === 'authenticated') {
       setAuthenticated(true);
-      setResults(getAllResults());
+      loadResults();
     }
   }, []);
 
@@ -91,7 +90,7 @@ export default function AdminPanel() {
     if (password === ADMIN_PASSWORD) {
       sessionStorage.setItem(ADMIN_SESSION_KEY, 'authenticated');
       setAuthenticated(true);
-      setResults(getAllResults());
+      loadResults();
       setError('');
     } else {
       setError('Senha incorreta. Tente novamente.');
@@ -105,10 +104,10 @@ export default function AdminPanel() {
     setPassword('');
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!window.confirm('Excluir este resultado permanentemente?')) return;
-    localStorage.removeItem(RESULT_PREFIX + id);
-    setResults(getAllResults());
+    await deleteExamResult(id);
+    setResults((prev) => prev.filter((r) => r.id !== id));
   };
 
   const filtered = results.filter((r) => {
@@ -184,6 +183,16 @@ export default function AdminPanel() {
           </div>
           <div className="flex items-center gap-2">
             <button
+              onClick={loadResults}
+              disabled={loading}
+              className="btn-secondary text-sm py-2 px-4 flex items-center gap-2 disabled:opacity-40"
+            >
+              <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Atualizar
+            </button>
+            <button
               onClick={() => exportCSV(filtered)}
               disabled={filtered.length === 0}
               className="btn-secondary text-sm py-2 px-4 flex items-center gap-2 disabled:opacity-40"
@@ -240,24 +249,33 @@ export default function AdminPanel() {
           </div>
         </div>
 
+        {/* Error */}
+        {fetchError && (
+          <div className="card border border-red-800 p-4 mb-4 text-red-400 text-sm">
+            {fetchError}
+          </div>
+        )}
+
+        {/* Loading */}
+        {loading && (
+          <div className="card p-12 text-center">
+            <p className="text-gray-400">Carregando resultados...</p>
+          </div>
+        )}
+
         {/* Results */}
-        {filtered.length === 0 ? (
+        {!loading && filtered.length === 0 && !fetchError && (
           <div className="card p-12 text-center">
             <p className="text-gray-400 text-lg mb-2">Nenhum resultado encontrado</p>
             <p className="text-gray-600 text-sm">
               {results.length === 0
-                ? 'Ainda não há candidatos que completaram a prova neste dispositivo.'
+                ? 'Ainda não há candidatos que completaram a prova.'
                 : 'Tente ajustar os filtros de busca.'}
             </p>
-            <div className="mt-6 p-4 bg-af-muted rounded-xl text-xs text-gray-500 text-left">
-              <p className="font-semibold text-gray-400 mb-2">📌 Nota sobre o armazenamento</p>
-              <p>
-                Os resultados são salvos no localStorage do navegador. Para centralizar resultados
-                de múltiplos candidatos remotos, configure a integração com Supabase (ver README).
-              </p>
-            </div>
           </div>
-        ) : (
+        )}
+
+        {!loading && filtered.length > 0 && (
           <div className="space-y-3">
             <p className="text-xs text-gray-500 px-1">{filtered.length} resultado(s)</p>
             {filtered.map((r) => {
@@ -294,7 +312,6 @@ export default function AdminPanel() {
 
                   {isExpanded && (
                     <div className="border-t border-af-border px-4 pb-5 pt-4 animate-fade-in">
-                      {/* Details */}
                       <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 text-sm mb-5">
                         {[
                           { label: 'WhatsApp', value: r.candidate.whatsapp },
@@ -314,7 +331,6 @@ export default function AdminPanel() {
                         ))}
                       </div>
 
-                      {/* Answer grid */}
                       <p className="text-xs text-gray-500 mb-2">Respostas por questão:</p>
                       <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5 mb-4">
                         {questions.map((q) => {

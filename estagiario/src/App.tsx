@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Candidate, ExamResult, AppState, OptionId } from './types/exam';
 import { questions } from './data/questions';
+import { saveExamResult } from './lib/supabase';
 import CandidateForm from './components/CandidateForm';
 import Header from './components/Header';
 import QuestionCard from './components/QuestionCard';
@@ -10,7 +11,7 @@ import AdminPanel from './components/AdminPanel';
 import { useExamSecurity } from './hooks/useExamSecurity';
 
 const MIN_TIME_SECONDS = 10 * 60;
-const MAX_TIME_SECONDS = 90 * 60;
+const MAX_TIME_SECONDS = 60 * 60;
 
 const KEY_STATUS = 'af_exam_status';
 const KEY_RESULT_PREFIX = 'af_result_';
@@ -207,6 +208,9 @@ export default function App() {
 
     localStorage.setItem(KEY_STATUS, 'completed');
     localStorage.setItem(KEY_RESULT_PREFIX + examIdRef.current, JSON.stringify(examResult));
+
+    // Persist to central database (fire-and-forget)
+    saveExamResult(examResult).catch(() => {});
 
     if (auto) {
       setResult(examResult);
