@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AF Advogados — Manual do Projeto v2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:#fff;color:#1a1a1a;font-size:14px;line-height:1.6}
+  .cover{background:#0d0d0d;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 40px;page-break-after:always}
+  .logo{width:80px;height:80px;background:#C8586E;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 32px;font-family:Georgia,serif;font-size:32px;font-weight:700;color:#fff}
+  .cover h1{font-size:42px;font-weight:800;color:#fff;margin-bottom:12px}
+  .cover h2{font-size:20px;font-weight:400;color:#C8586E;margin-bottom:24px}
+  .cover p{color:#888;font-size:13px;margin-bottom:8px}
+  .cover .badge{display:inline-block;border:1px solid #C8586E;color:#C8586E;font-size:12px;padding:6px 18px;border-radius:20px;margin-top:8px}
+  .cover .version{background:#C8586E;color:#fff;font-size:12px;padding:4px 14px;border-radius:20px;display:inline-block;margin-top:12px}
+  .content{max-width:820px;margin:0 auto;padding:48px 40px}
+  h2.section{font-size:26px;font-weight:800;color:#0d0d0d;margin:0 0 6px;padding-bottom:10px;border-bottom:3px solid #C8586E}
+  h3{font-size:14px;font-weight:700;color:#C8586E;text-transform:uppercase;letter-spacing:.08em;margin:28px 0 12px}
+  p{margin-bottom:12px;color:#333}
+  .page{page-break-before:always;padding-top:48px}
+  .highlight{background:#fdf0f2;border-left:4px solid #C8586E;border-radius:0 8px 8px 0;padding:14px 18px;margin:14px 0}
+  .highlight p{margin:0;color:#5a1a28;font-size:13px}
+  .highlight strong{color:#C8586E}
+  .warn{background:#fffbea;border-left:4px solid #e6a817;border-radius:0 8px 8px 0;padding:14px 18px;margin:14px 0}
+  .warn p{margin:0;color:#5a3d00;font-size:13px}
+  .warn strong{color:#b07a00}
+  .danger{background:#fff0f0;border-left:4px solid #e53e3e;border-radius:0 8px 8px 0;padding:14px 18px;margin:14px 0}
+  .danger p{margin:0;color:#5a0000;font-size:13px}
+  .danger strong{color:#c53030}
+  .ok{background:#f0fff4;border-left:4px solid #38a169;border-radius:0 8px 8px 0;padding:14px 18px;margin:14px 0}
+  .ok p{margin:0;color:#1a4731;font-size:13px}
+  .ok strong{color:#276749}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+  th{background:#0d0d0d;color:#fff;text-align:left;padding:10px 14px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  td{padding:10px 14px;border-bottom:1px solid #e8e8e8;color:#333;vertical-align:top}
+  tr:nth-child(even) td{background:#fafafa}
+  .badge-ok{background:#d4edda;color:#155724;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+  .badge-warn{background:#fff3cd;color:#856404;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+  .badge-err{background:#f8d7da;color:#721c24;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+  .badge-new{background:#cce5ff;color:#004085;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+  code{background:#f4f4f4;padding:2px 7px;border-radius:4px;font-family:'Courier New',monospace;font-size:12px;color:#b94a6a}
+  .info-box{border:1px solid #e0e0e0;border-radius:10px;padding:16px 20px;margin:14px 0}
+  .info-box .row{display:flex;gap:16px;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px}
+  .info-box .row:last-child{border-bottom:none}
+  .info-box .label{color:#888;min-width:160px;font-weight:500}
+  .info-box .val{color:#1a1a1a;font-family:'Courier New',monospace;font-size:12px;word-break:break-all}
+  ol{padding-left:20px;margin:10px 0}
+  ol li{margin-bottom:8px;color:#333;font-size:13px}
+  ul{padding-left:20px;margin:10px 0}
+  ul li{margin-bottom:6px;color:#333;font-size:13px}
+  .step{display:flex;gap:14px;align-items:flex-start;margin:10px 0;font-size:13px}
+  .step-num{min-width:28px;height:28px;background:#C8586E;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+  .step-num.blue{background:#3182ce}
+  .step-num.green{background:#38a169}
+  .footer{text-align:center;padding:40px 0;color:#999;font-size:12px;border-top:1px solid #eee;margin-top:40px}
+  .change-tag{display:inline-block;background:#C8586E;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;letter-spacing:.04em}
+  @media print{
+    .page{page-break-before:always}
+    .cover{min-height:auto;height:100vh}
+    body{font-size:12px}
+    .content{padding:32px 30px}
+  }
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="cover">
+  <div class="logo">AF</div>
+  <h1>Manual do Projeto</h1>
+  <h2>Prova Online — Processo Seletivo Estagiário</h2>
+  <p>AF Advogados · ferrareze.dias@gmail.com</p>
+  <div class="badge">Gerado em 22 de maio de 2026</div>
+  <div class="version">Versão 2 — Atualizado</div>
+</div>
+
+<!-- SUMÁRIO DE MUDANÇAS -->
+<div class="content">
+  <h2 class="section">O que mudou nesta versão</h2>
+  <div class="danger">
+    <p><strong>🔑 AÇÃO URGENTE:</strong> Um token do Vercel foi exposto no chat. Revogue-o agora antes de continuar. Instruções na Seção 7.</p>
+  </div>
+  <table>
+    <tr><th>Seção</th><th>O que mudou</th></tr>
+    <tr><td><strong>DNS (Seção 4)</strong></td><td>Registro A (Hostinger) foi removido e substituído por CNAME apontando para o Vercel. O site agora é servido pelo Vercel.</td></tr>
+    <tr><td><strong>Hospedagem (Seção 4)</strong></td><td>A Hostinger não serve mais o app. O Vercel passou a ser a hospedagem principal.</td></tr>
+    <tr><td><strong>URLs (Seção 2)</strong></td><td>Vercel deixou de ser "backup bloqueado" e passou a ser ATIVO como hospedagem principal.</td></tr>
+    <tr><td><strong>Deploy (Seção 5)</strong></td><td>Deploy automático agora via integração nativa Vercel + GitHub. GitHub Actions FTP não é mais necessário.</td></tr>
+    <tr><td><strong>Admin / Resultados (Seção 3)</strong></td><td>A versão atual em produção usa <strong>localStorage</strong> (não Supabase). Resultados ficam no navegador do candidato.</td></tr>
+    <tr><td><strong>Tokens (Seção 7)</strong></td><td>Token do Vercel foi exposto no chat — revogar urgente.</td></tr>
+  </table>
+</div>
+
+<!-- SEÇÃO 1 -->
+<div class="content page">
+  <h2 class="section">1. Visão Geral do Projeto</h2>
+  <div class="highlight">
+    <p><strong>O que é:</strong> Sistema web de prova objetiva online para seleção de estagiários do escritório AF Advogados. Os candidatos acessam pelo link, preenchem um formulário, realizam 20 questões de múltipla escolha com proteção anti-cola e, ao finalizar, o resultado é exibido imediatamente.</p>
+  </div>
+
+  <h3>Tecnologias utilizadas</h3>
+  <table>
+    <tr><th>Tecnologia</th><th>Função</th><th>Status</th></tr>
+    <tr><td>React + Vite + TypeScript</td><td>Interface do site (front-end)</td><td><span class="badge-ok">ATIVO</span></td></tr>
+    <tr><td>Tailwind CSS</td><td>Estilização visual</td><td><span class="badge-ok">ATIVO</span></td></tr>
+    <tr><td><strong>Vercel</strong> <span class="change-tag">NOVO</span></td><td>Hospedagem principal do site — substitui Hostinger</td><td><span class="badge-ok">ATIVO</span></td></tr>
+    <tr><td>GitHub</td><td>Código-fonte e deploy automático</td><td><span class="badge-ok">ATIVO</span></td></tr>
+    <tr><td>Hostinger</td><td>Registra o domínio advocaciaaf.com.br — <strong>não serve mais o app</strong></td><td><span class="badge-warn">SÓ DNS</span></td></tr>
+    <tr><td>Supabase</td><td>Banco de dados — configurado mas <strong>não integrado</strong> na versão atual</td><td><span class="badge-warn">INATIVO</span></td></tr>
+  </table>
+
+  <div class="warn">
+    <p><strong>⚠️ Sobre o Supabase:</strong> O Supabase foi configurado em uma sessão anterior mas o código atualmente em produção usa <strong>localStorage</strong> para salvar resultados. Isso significa que cada resultado fica salvo apenas no dispositivo/navegador do candidato. Para centralizar os resultados em um banco de dados, a integração com Supabase precisa ser reativada (ver Seção 3).</p>
+  </div>
+
+  <h3>Funcionamento resumido</h3>
+  <div class="step"><div class="step-num">1</div><div>Candidato acessa <strong>estagio.advocaciaaf.com.br</strong> e preenche nome, e-mail, WhatsApp, curso, semestre e cidade</div></div>
+  <div class="step"><div class="step-num">2</div><div>Sistema bloqueia a tela em modo fullscreen com anti-cola (sem copiar, colar, trocar aba ou sair)</div></div>
+  <div class="step"><div class="step-num">3</div><div>Candidato responde 20 questões (tempo mínimo: 10 min / máximo: 90 min)</div></div>
+  <div class="step"><div class="step-num">4</div><div>Ao finalizar, resultado é salvo no localStorage do navegador e exibido na tela</div></div>
+  <div class="step"><div class="step-num">5</div><div>Administrador acessa o painel (<code>/?admin</code>), vê resultados <em>do dispositivo atual</em> e exporta CSV</div></div>
+</div>
+
+<!-- SEÇÃO 2 -->
+<div class="content page">
+  <h2 class="section">2. URLs e Acessos</h2>
+
+  <h3>Links do sistema</h3>
+  <table>
+    <tr><th>O Que</th><th>URL</th><th>Status</th></tr>
+    <tr><td>🎯 Prova para candidatos</td><td><code>estagio.advocaciaaf.com.br</code></td><td><span class="badge-ok">ATIVO</span></td></tr>
+    <tr><td>🔐 Painel Admin</td><td><code>estagio.advocaciaaf.com.br/?admin</code></td><td><span class="badge-ok">ATIVO</span></td></tr>
+    <tr><td>📦 Repositório GitHub</td><td><code>github.com/aleferrareze/prova-estagiario-af</code></td><td><span class="badge-ok">ATIVO</span></td></tr>
+    <tr><td>☁️ Vercel (hospedagem) <span class="change-tag">MUDOU</span></td><td><code>prova-estagiario-af.vercel.app</code></td><td><span class="badge-ok">PRINCIPAL</span></td></tr>
+    <tr><td>🏠 Hostinger</td><td><code>hpanel.hostinger.com</code></td><td><span class="badge-warn">SÓ DNS</span></td></tr>
+  </table>
+
+  <div class="ok">
+    <p><strong>✅ Vercel agora é a hospedagem principal.</strong> O registro DNS CNAME foi configurado na Hostinger apontando para <code>cname.vercel-dns.com</code>. O domínio <code>estagio.advocaciaaf.com.br</code> agora aponta para o Vercel.</p>
+  </div>
+
+  <h3>Senha do Painel Admin</h3>
+  <div class="info-box">
+    <div class="row"><span class="label">URL de acesso</span><span class="val">estagio.advocaciaaf.com.br/?admin</span></div>
+    <div class="row"><span class="label">Senha</span><span class="val">AFadvogados@2025</span></div>
+    <div class="row"><span class="label">Para alterar</span><span class="val">Edite ADMIN_PASSWORD em src/components/AdminPanel.tsx</span></div>
+  </div>
+
+  <h3>Contas e acessos</h3>
+  <div class="info-box">
+    <div class="row"><span class="label">E-mail principal</span><span class="val">ferrareze.dias@gmail.com</span></div>
+    <div class="row"><span class="label">GitHub</span><span class="val">github.com/aleferrareze</span></div>
+    <div class="row"><span class="label">Vercel</span><span class="val">vercel.com/ferrarezedias-6722s-projects</span></div>
+    <div class="row"><span class="label">Hostinger</span><span class="val">hpanel.hostinger.com (usado apenas para gerenciar DNS)</span></div>
+    <div class="row"><span class="label">Supabase</span><span class="val">supabase.com — projeto: CRM AF Advogados (inativo no momento)</span></div>
+  </div>
+</div>
+
+<!-- SEÇÃO 3 -->
+<div class="content page">
+  <h2 class="section">3. Resultados dos Candidatos</h2>
+
+  <div class="warn">
+    <p><strong>⚠️ Estado atual:</strong> O código em produção salva resultados no <strong>localStorage do navegador</strong> de cada candidato. O painel admin (<code>/?admin</code>) mostra apenas resultados do dispositivo em que está sendo acessado.</p>
+  </div>
+
+  <h3>Como os resultados funcionam agora (localStorage)</h3>
+  <table>
+    <tr><th>Aspecto</th><th>Comportamento</th></tr>
+    <tr><td>Onde são salvos</td><td>No navegador do candidato (localStorage)</td></tr>
+    <tr><td>Admin vê todos?</td><td>Não — vê apenas quem fez a prova naquele navegador/dispositivo</td></tr>
+    <tr><td>Funciona offline?</td><td>Sim</td></tr>
+    <tr><td>Risco de perda</td><td>Se o candidato limpar o cache do navegador, o resultado é perdido</td></tr>
+    <tr><td>Exportar CSV</td><td>Disponível no painel admin — exporta apenas os resultados locais</td></tr>
+  </table>
+
+  <h3>Supabase — Configurado mas inativo</h3>
+  <p>O Supabase foi configurado em sessão anterior. Os dados de conexão abaixo estão preservados caso queira reativar a integração no futuro:</p>
+  <div class="info-box">
+    <div class="row"><span class="label">Projeto</span><span class="val">CRM AF Advogados</span></div>
+    <div class="row"><span class="label">Project ID</span><span class="val">ikhvugnpcdqlnfpxkpwp</span></div>
+    <div class="row"><span class="label">URL</span><span class="val">https://ikhvugnpcdqlnfpxkpwp.supabase.co</span></div>
+    <div class="row"><span class="label">Região</span><span class="val">sa-east-1 (São Paulo)</span></div>
+    <div class="row"><span class="label">Arquivo de conexão</span><span class="val">src/lib/supabase.ts (existe no repo mas não é usado pelo App atual)</span></div>
+  </div>
+
+  <div class="warn">
+    <p><strong>Atenção — plano gratuito do Supabase:</strong> Projetos sem uso por mais de 7 dias são pausados automaticamente. Se precisar reativar, acesse <code>supabase.com</code>, entre no projeto CRM AF Advogados e clique em <strong>Restore</strong>.</p>
+  </div>
+
+  <h3>Como centralizar os resultados (opcional, futuro)</h3>
+  <p>Para ver resultados de todos os candidatos no painel admin, independente do dispositivo, a integração com Supabase precisa ser reativada. Isso requer:</p>
+  <ol>
+    <li>Restaurar o projeto no Supabase (se pausado)</li>
+    <li>Adicionar o arquivo <code>src/lib/supabase.ts</code> com URL e chave</li>
+    <li>Modificar <code>src/App.tsx</code> para salvar no Supabase ao finalizar</li>
+    <li>Modificar <code>src/components/AdminPanel.tsx</code> para ler do Supabase</li>
+    <li>Fazer commit e aguardar deploy automático no Vercel</li>
+  </ol>
+</div>
+
+<!-- SEÇÃO 4 -->
+<div class="content page">
+  <h2 class="section">4. Hospedagem e DNS <span class="change-tag">MUDOU</span></h2>
+
+  <div class="ok">
+    <p><strong>✅ MUDANÇA APLICADA HOJE (22/05/2026):</strong> O DNS foi alterado na Hostinger. O site agora é servido pelo <strong>Vercel</strong>, não mais pela Hostinger.</p>
+  </div>
+
+  <h3>Configuração atual do DNS — Hostinger</h3>
+  <table>
+    <tr><th>Tipo</th><th>Nome</th><th>Destino</th><th>Status</th></tr>
+    <tr><td><s style="color:#999">A</s></td><td><s style="color:#999">estagio</s></td><td><s style="color:#999">77.37.127.187 (Hostinger)</s></td><td><span class="badge-err">REMOVIDO</span></td></tr>
+    <tr><td><strong>CNAME</strong></td><td><strong>estagio</strong></td><td><strong>cname.vercel-dns.com</strong></td><td><span class="badge-ok">ATIVO</span></td></tr>
+  </table>
+
+  <h3>Hospedagem — Vercel</h3>
+  <div class="info-box">
+    <div class="row"><span class="label">Provedor</span><span class="val">Vercel</span></div>
+    <div class="row"><span class="label">Projeto Vercel</span><span class="val">prova-estagiario-af</span></div>
+    <div class="row"><span class="label">URL Vercel</span><span class="val">prova-estagiario-af.vercel.app</span></div>
+    <div class="row"><span class="label">Domínio customizado</span><span class="val">estagio.advocaciaaf.com.br</span></div>
+    <div class="row"><span class="label">GitHub conectado</span><span class="val">github.com/aleferrareze/prova-estagiario-af (branch: main)</span></div>
+    <div class="row"><span class="label">SSL</span><span class="val">Automático pelo Vercel (Let's Encrypt)</span></div>
+  </div>
+
+  <h3>Hostinger — Papel atual</h3>
+  <div class="info-box">
+    <div class="row"><span class="label">Função</span><span class="val">Gerenciamento de DNS do domínio advocaciaaf.com.br</span></div>
+    <div class="row"><span class="label">Painel</span><span class="val">hpanel.hostinger.com</span></div>
+    <div class="row"><span class="label">O app roda lá?</span><span class="val">NÃO — o DNS agora aponta para o Vercel</span></div>
+  </div>
+
+  <div class="warn">
+    <p><strong>Se o DNS precisar ser reconfigurado:</strong> hPanel → Domínios → Zona DNS → remover o registro A do estagio → adicionar CNAME <code>estagio</code> apontando para <code>cname.vercel-dns.com</code> com TTL 3600.</p>
+  </div>
+
+  <h3>Se o site ficar fora do ar</h3>
+  <ol>
+    <li>Verifique se o deploy no Vercel está READY: <code>vercel.com/ferrarezedias-6722s-projects/prova-estagiario-af</code></li>
+    <li>Verifique se o DNS ainda aponta para <code>cname.vercel-dns.com</code> na Hostinger</li>
+    <li>Se o Vercel mostrar erro de build, verifique o último commit no GitHub</li>
+    <li>Como fallback temporário: acesse direto via <code>prova-estagiario-af.vercel.app</code></li>
+  </ol>
+</div>
+
+<!-- SEÇÃO 5 -->
+<div class="content page">
+  <h2 class="section">5. GitHub e Deploy Automático <span class="change-tag">MUDOU</span></h2>
+
+  <div class="ok">
+    <p><strong>✅ Deploy automático ativo via Vercel.</strong> A integração nativa do Vercel com o GitHub já está configurada. Qualquer commit na branch <code>main</code> do repositório <code>prova-estagiario-af</code> dispara um deploy automático. Não é necessário configurar GitHub Actions ou FTP.</p>
+  </div>
+
+  <h3>Repositório principal</h3>
+  <div class="info-box">
+    <div class="row"><span class="label">URL</span><span class="val">github.com/aleferrareze/prova-estagiario-af</span></div>
+    <div class="row"><span class="label">Branch principal</span><span class="val">main</span></div>
+    <div class="row"><span class="label">Visibilidade</span><span class="val">Privado</span></div>
+    <div class="row"><span class="label">Deploy via</span><span class="val">Integração nativa Vercel + GitHub (automático)</span></div>
+  </div>
+
+  <h3>Como o deploy funciona agora</h3>
+  <div class="step"><div class="step-num blue">1</div><div>Faça qualquer alteração no código no GitHub (<code>github.com/aleferrareze/prova-estagiario-af</code>)</div></div>
+  <div class="step"><div class="step-num blue">2</div><div>Clique em Commit changes para salvar a alteração na branch <code>main</code></div></div>
+  <div class="step"><div class="step-num blue">3</div><div>O Vercel detecta automaticamente o novo commit e inicia o build</div></div>
+  <div class="step"><div class="step-num blue">4</div><div>Em ~2 minutos o site em <code>estagio.advocaciaaf.com.br</code> está atualizado</div></div>
+
+  <h3>GitHub Actions — não é mais necessário</h3>
+  <p>O arquivo <code>.github/workflows/deploy.yml</code> (que fazia deploy via FTP para a Hostinger) não precisa mais ser configurado. O Vercel cuida do deploy automaticamente pela integração com o GitHub.</p>
+
+  <h3>Repositório de referência (código-fonte)</h3>
+  <div class="info-box">
+    <div class="row"><span class="label">Repositório</span><span class="val">github.com/aleferrareze/supera-dividas</span></div>
+    <div class="row"><span class="label">Branch</span><span class="val">claude/busy-faraday-Smwek</span></div>
+    <div class="row"><span class="label">Pasta</span><span class="val">estagiario/</span></div>
+    <div class="row"><span class="label">Observação</span><span class="val">Contém o código-fonte com histórico das alterações desta sessão</span></div>
+  </div>
+</div>
+
+<!-- SEÇÃO 6 -->
+<div class="content page">
+  <h2 class="section">6. Arquivos e Configurações do Sistema</h2>
+
+  <h3>Estrutura de arquivos importantes</h3>
+  <table>
+    <tr><th>Arquivo</th><th>O Que Controla</th></tr>
+    <tr><td><code>src/App.tsx</code></td><td>Lógica principal: timer, anti-cola, fluxo da prova, salvamento no localStorage</td></tr>
+    <tr><td><code>src/data/questions.ts</code></td><td><strong>Questões e gabarito</strong> — edite aqui para alterar perguntas</td></tr>
+    <tr><td><code>src/components/AdminPanel.tsx</code></td><td>Painel administrativo + senha de acesso + leitura do localStorage</td></tr>
+    <tr><td><code>src/components/CandidateForm.tsx</code></td><td>Formulário de cadastro do candidato</td></tr>
+    <tr><td><code>src/components/ResultCard.tsx</code></td><td>Tela de resultado do candidato</td></tr>
+    <tr><td><code>src/lib/supabase.ts</code></td><td>Conexão com Supabase (existe mas não está em uso no App atual)</td></tr>
+    <tr><td><code>vercel.json</code></td><td>Configuração do Vercel — redireciona rotas para index.html (SPA)</td></tr>
+  </table>
+
+  <h3>Configurações da prova</h3>
+  <div class="info-box">
+    <div class="row"><span class="label">Tempo mínimo</span><span class="val">10 minutos — src/App.tsx → MIN_TIME_SECONDS = 10 * 60</span></div>
+    <div class="row"><span class="label">Tempo máximo</span><span class="val">90 minutos — src/App.tsx → MAX_TIME_SECONDS = 90 * 60</span></div>
+    <div class="row"><span class="label">Nota de aprovação</span><span class="val">70% (14 de 20 questões) — src/App.tsx → percentage >= 70</span></div>
+    <div class="row"><span class="label">Total de questões</span><span class="val">20 — src/data/questions.ts</span></div>
+    <div class="row"><span class="label">Senha admin</span><span class="val">AFadvogados@2025 — src/components/AdminPanel.tsx → ADMIN_PASSWORD</span></div>
+  </div>
+
+  <h3>Anti-cola ativo</h3>
+  <ul>
+    <li>Tela cheia obrigatória (fullscreen)</li>
+    <li>Sair da aba ou minimizar: 1 advertência → 2ª vez bloqueia a prova</li>
+    <li>Ctrl+C, Ctrl+V, Ctrl+A, Ctrl+F bloqueados</li>
+    <li>F12 (DevTools) bloqueado</li>
+    <li>Botão direito (menu de contexto) bloqueado</li>
+    <li>Seleção de texto desativada durante a prova</li>
+    <li>Cada candidato só pode realizar a prova uma vez por dispositivo/navegador</li>
+  </ul>
+</div>
+
+<!-- SEÇÃO 7 -->
+<div class="content page">
+  <h2 class="section">7. Tokens, Chaves e Segurança</h2>
+
+  <div class="danger">
+    <p><strong>🚨 AÇÃO URGENTE NECESSÁRIA</strong><br><br>
+    O token do Vercel abaixo foi exposto em uma conversa de chat. <strong>Revogue-o imediatamente</strong> para evitar que alguém o use indevidamente.</p>
+  </div>
+
+  <h3>Token Vercel — REVOGAR AGORA</h3>
+  <div class="info-box">
+    <div class="row"><span class="label">Token exposto</span><span class="val">[REDACTED — revogue em vercel.com → Account Settings → Tokens]</span></div>
+    <div class="row"><span class="label">Como revogar</span><span class="val">vercel.com → Account Settings → Tokens → encontre o token → Delete</span></div>
+  </div>
+
+  <h3>GitHub Personal Access Token (PAT)</h3>
+  <div class="info-box">
+    <div class="row"><span class="label">Token exposto</span><span class="val">[REDACTED — revogue em github.com → Settings → Developer settings → Personal access tokens]</span></div>
+    <div class="row"><span class="label">Permissões</span><span class="val">repo (sem workflow scope)</span></div>
+    <div class="row"><span class="label">Como revogar</span><span class="val">github.com → Settings → Developer settings → Personal access tokens → Revoke</span></div>
+    <div class="row"><span class="label">Novo token</span><span class="val">Ao gerar novo, adicione permissões: repo + workflow</span></div>
+  </div>
+
+  <h3>Supabase Anon Key (segura — pode permanecer)</h3>
+  <div class="info-box">
+    <div class="row"><span class="label">Chave</span><span class="val">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlra...</span></div>
+    <div class="row"><span class="label">É seguro?</span><span class="val">Sim — anon key é projetada para ser pública no front-end. RLS garante segurança.</span></div>
+  </div>
+
+  <h3>Cancelar trial Pro do Vercel</h3>
+  <div class="warn">
+    <p><strong>Evite cobrança de US$20/mês.</strong> Se o plano Pro foi ativado durante testes, faça downgrade:<br>
+    <code>vercel.com/ferrarezedias-6722s-projects/~/settings/billing</code> → clique em <strong>Downgrade to Hobby</strong>.<br>
+    O site continuará funcionando normalmente no plano gratuito.</p>
+  </div>
+</div>
+
+<!-- SEÇÃO 8 -->
+<div class="content page">
+  <h2 class="section">8. Resolução de Problemas</h2>
+
+  <h3>Site não abre em estagio.advocaciaaf.com.br</h3>
+  <div class="highlight">
+    <p><strong>Causa mais comum:</strong> DNS ainda propagando (pode levar até 24h após mudança).<br>
+    <strong>Teste imediato:</strong> Acesse <code>prova-estagiario-af.vercel.app</code> — se abrir, o problema é só o DNS.<br>
+    <strong>Se o DNS estiver errado:</strong> hPanel Hostinger → Zona DNS → confirmar que existe CNAME <code>estagio</code> → <code>cname.vercel-dns.com</code>.</p>
+  </div>
+
+  <h3>Painel admin não mostra resultados</h3>
+  <div class="highlight">
+    <p><strong>Causa (versão atual):</strong> O painel admin lê resultados do localStorage do navegador. Se você está acessando o admin de um dispositivo diferente do candidato, não verá os resultados.<br>
+    <strong>Solução imediata:</strong> Acesse o admin no mesmo dispositivo/navegador onde a prova foi feita.<br>
+    <strong>Solução definitiva:</strong> Reativar integração com Supabase (ver Seção 3).</p>
+  </div>
+
+  <h3>Deploy no Vercel com erro</h3>
+  <div class="highlight">
+    <p><strong>Como verificar:</strong> Acesse <code>vercel.com/ferrarezedias-6722s-projects/prova-estagiario-af</code> → veja o último deployment.<br>
+    <strong>Se o build falhou:</strong> Clique no deployment com erro → veja os logs → identifique o arquivo com problema.<br>
+    <strong>Solução:</strong> Corrija o código no GitHub e faça um novo commit — o Vercel tentará o build novamente.</p>
+  </div>
+
+  <h3>Candidato não consegue finalizar a prova</h3>
+  <div class="highlight">
+    <p><strong>Motivo mais comum:</strong> O tempo mínimo de 10 minutos ainda não passou. O botão "Finalizar" só aparece após 10 minutos. Isso é proposital.</p>
+  </div>
+
+  <h3>Candidato diz que a prova está bloqueada</h3>
+  <div class="highlight">
+    <p><strong>Causa:</strong> O candidato saiu da tela 2 vezes (troca de aba, minimizar ou sair do fullscreen).<br>
+    <strong>Solução:</strong> O candidato deve acessar de outro navegador ou dispositivo. O bloqueio é por localStorage — cada navegador é independente.</p>
+  </div>
+
+  <h3>Como alterar questões ou gabarito</h3>
+  <div class="step"><div class="step-num green">1</div><div>Acesse <code>github.com/aleferrareze/prova-estagiario-af</code></div></div>
+  <div class="step"><div class="step-num green">2</div><div>Clique em <code>src/data/questions.ts</code></div></div>
+  <div class="step"><div class="step-num green">3</div><div>Clique no ícone de lápis (editar)</div></div>
+  <div class="step"><div class="step-num green">4</div><div>Altere o texto das questões ou o campo <code>correctAnswer</code></div></div>
+  <div class="step"><div class="step-num green">5</div><div>Clique em <strong>Commit changes</strong> — o Vercel atualiza o site em ~2 minutos</div></div>
+
+  <h3>Como exportar resultados</h3>
+  <p>Acesse o painel admin (<code>estagio.advocaciaaf.com.br/?admin</code>), faça login com a senha e clique em <strong>Exportar CSV</strong>. O arquivo abre diretamente no Excel.</p>
+
+  <div class="footer">
+    AF Advogados · Processo Seletivo Estagiário · Manual atualizado em 22/05/2026 · Versão 2<br>
+    Desenvolvido com React + Vite + TypeScript · Hospedado no Vercel
+  </div>
+</div>
+
+</body>
+</html>
