@@ -1,10 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ExamResult } from '../types/exam';
 import { questions } from '../data/questions';
 import { getAllExamResults, deleteExamResult } from '../lib/supabase';
-
-const ADMIN_PASSWORD = 'AFadvogados@2025';
-const ADMIN_SESSION_KEY = 'af_admin_auth';
 
 type FilterType = 'all' | 'approved' | 'rejected';
 
@@ -54,18 +51,27 @@ function exportCSV(results: ExamResult[]) {
   URL.revokeObjectURL(url);
 }
 
+const ADMIN_PASSWORD = 'AFadvogados@2025';
+const ADMIN_SESSION_KEY = 'af_admin_auth';
+
 export default function AdminPanel() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [results, setResults] = useState<ExamResult[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [fetchError, setFetchError] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
   const [search, setSearch] = useState('');
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState('');
 
-  const loadResults = async () => {
+  useEffect(() => {
+    if (sessionStorage.getItem(ADMIN_SESSION_KEY) === 'authenticated') {
+      setAuthenticated(true);
+    }
+  }, []);
+
+  const loadResults = useCallback(async () => {
     setLoading(true);
     setFetchError('');
     try {
@@ -76,21 +82,17 @@ export default function AdminPanel() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    if (sessionStorage.getItem(ADMIN_SESSION_KEY) === 'authenticated') {
-      setAuthenticated(true);
-      loadResults();
-    }
-  }, []);
+    if (authenticated) loadResults();
+  }, [authenticated, loadResults]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
       sessionStorage.setItem(ADMIN_SESSION_KEY, 'authenticated');
       setAuthenticated(true);
-      loadResults();
       setError('');
     } else {
       setError('Senha incorreta. Tente novamente.');
@@ -107,7 +109,7 @@ export default function AdminPanel() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Excluir este resultado permanentemente?')) return;
     await deleteExamResult(id);
-    setResults((prev) => prev.filter((r) => r.id !== id));
+    await loadResults();
   };
 
   const filtered = results.filter((r) => {
@@ -187,8 +189,12 @@ export default function AdminPanel() {
               disabled={loading}
               className="btn-secondary text-sm py-2 px-4 flex items-center gap-2 disabled:opacity-40"
             >
-              <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              <svg
+                className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
               Atualizar
             </button>
@@ -223,6 +229,13 @@ export default function AdminPanel() {
           ))}
         </div>
 
+        {/* Error */}
+        {fetchError && (
+          <div className="card p-4 mb-4 border border-red-800 bg-red-900/20">
+            <p className="text-red-400 text-sm">{fetchError}</p>
+          </div>
+        )}
+
         {/* Filters */}
         <div className="card p-4 mb-4 flex flex-col sm:flex-row gap-3">
           <input
@@ -249,22 +262,18 @@ export default function AdminPanel() {
           </div>
         </div>
 
-        {/* Error */}
-        {fetchError && (
-          <div className="card border border-red-800 p-4 mb-4 text-red-400 text-sm">
-            {fetchError}
-          </div>
-        )}
-
-        {/* Loading */}
-        {loading && (
+        {/* Results */}
+        {loading ? (
           <div className="card p-12 text-center">
+            <div className="flex justify-center mb-4">
+              <svg className="w-8 h-8 text-af-coral animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </div>
             <p className="text-gray-400">Carregando resultados...</p>
           </div>
-        )}
-
-        {/* Results */}
-        {!loading && filtered.length === 0 && !fetchError && (
+        ) : filtered.length === 0 ? (
           <div className="card p-12 text-center">
             <p className="text-gray-400 text-lg mb-2">Nenhum resultado encontrado</p>
             <p className="text-gray-600 text-sm">
@@ -273,9 +282,7 @@ export default function AdminPanel() {
                 : 'Tente ajustar os filtros de busca.'}
             </p>
           </div>
-        )}
-
-        {!loading && filtered.length > 0 && (
+        ) : (
           <div className="space-y-3">
             <p className="text-xs text-gray-500 px-1">{filtered.length} resultado(s)</p>
             {filtered.map((r) => {

@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Candidate, ExamResult, AppState, OptionId } from './types/exam';
 import { questions } from './data/questions';
-import { saveExamResult } from './lib/supabase';
 import CandidateForm from './components/CandidateForm';
 import Header from './components/Header';
 import QuestionCard from './components/QuestionCard';
@@ -9,6 +8,7 @@ import ResultCard from './components/ResultCard';
 import AnswerReview from './components/AnswerReview';
 import AdminPanel from './components/AdminPanel';
 import { useExamSecurity } from './hooks/useExamSecurity';
+import { saveExamResult } from './lib/supabase';
 
 const MIN_TIME_SECONDS = 10 * 60;
 const MAX_TIME_SECONDS = 60 * 60;
@@ -106,7 +106,12 @@ export default function App() {
   const [isAdmin] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     const path = window.location.pathname;
-    return params.has('admin') || window.location.hash === '#admin' || path === '/admin' || path.startsWith('/admin/');
+    return (
+      params.has('admin') ||
+      window.location.hash === '#admin' ||
+      path === '/admin' ||
+      path.startsWith('/admin/')
+    );
   });
 
   const [appState, setAppState] = useState<AppState>('landing');
@@ -209,8 +214,6 @@ export default function App() {
 
     localStorage.setItem(KEY_STATUS, 'completed');
     localStorage.setItem(KEY_RESULT_PREFIX + examIdRef.current, JSON.stringify(examResult));
-
-    // Persist to central database (fire-and-forget)
     saveExamResult(examResult).catch(() => {});
 
     if (auto) {
